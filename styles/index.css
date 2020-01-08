@@ -1,0 +1,10 @@
+@font-face{
+  font-family:'Microsoft YaHei';
+  src: url('../font/msyh.ttf');
+}
+
+body{
+  padding: 40px 20px;
+  font-family: serif,'Microsoft YaHei';
+
+}
