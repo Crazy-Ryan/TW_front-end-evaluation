@@ -15,11 +15,11 @@ body {
 }
 
 .overview-part {
+  flex-grow: 1;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-grow: 1;
   margin-right: 20px;
   padding: 20px;
   border-radius: 5px;
@@ -57,7 +57,10 @@ body {
   font-size: 14px;
 }
 
-.overview-bar h1, .overview-bar h2, .overview-bar h3, .overview-bar h4 {
+.overview-bar h1,
+.overview-bar h2,
+.overview-bar h3,
+.overview-bar h4 {
   margin: 0;
 }
 
@@ -93,7 +96,6 @@ body {
 }
 
 .project-list {
-  table-layout: auto;
   width: 100%;
   border-collapse: collapse;
   font-size: 16px;
@@ -108,7 +110,8 @@ body {
   width: 20%;
 }
 
-.table-header td:nth-child(3), .table-header td:nth-child(4) {
+.table-header td:nth-child(3),
+.table-header td:nth-child(4) {
   width: 14%;
 }
 
@@ -125,11 +128,11 @@ body {
 }
 
 .project-description {
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .project-description:hover {
@@ -149,10 +152,10 @@ body {
 }
 
 .delete-popup {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
-  display: none;
   justify-content: center;
   align-items: center;
   width: 100%;

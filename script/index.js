@@ -6,26 +6,18 @@ let projectDetailData;
 let projectToDeleteEl;
 let tableBody = document.getElementsByTagName('tbody')[0];
 let deletePopup = document.getElementsByClassName('delete-popup')[0];
-let projectData = getItemData();
 let unresolvedTaskCount = 0;
 let processingTaskCount = 0;
 let resolvedTaskCount = 0;
 
-function loadPage(projectData) {
-  projectDetailData = projectData;
-  renderProjectList(projectDetailData);
-  renderStatusColor();
-  countTasks(projectDetailData);
-  updateStatistics();
-}
-
+getItemData();
 function onClickInterface(event) {
   const deleteIcon = 'delete-icon';
   const confirmBtn = 'confirm-btn';
   const cancelBtn = 'cancel-btn';
   const closeBtn = 'iconfont icon-guanbi';
-  let clickClass = event.target.getAttribute('class');
 
+  let clickClass = event.target.getAttribute('class');
   switch (clickClass) {
     case deleteIcon:
       setProjectToDelete(event.target);
@@ -45,10 +37,28 @@ function onClickInterface(event) {
     countTasks(projectDetailData);
     updateStatistics();
     hideDeletePopup();
+
+    function deleteProject(targetEl) {
+      let projectToDeleteId = targetEl.parentElement.parentElement.getAttribute('project-id');
+      deleteItemData(projectToDeleteId);
+      deleteProjectOnPage(targetEl.parentElement.parentElement);
+      deleteProjectInScript(projectToDeleteId);
+
+      function deleteProjectOnPage(targetEl) {
+        tableBody.removeChild(targetEl);
+      }
+      function deleteProjectInScript(projectToDeleteId) {
+        console.log(projectToDeleteId);
+        projectDetailData = projectDetailData.filter(project => projectToDeleteId !== project.id.toString());
+        console.log(projectDetailData);
+      }
+    }
   }
+
   function setProjectToDelete(target) {
     projectToDeleteEl = target;
   }
+
   function showDeletePopup() {
     deletePopup.style.display = "flex";
   }
@@ -57,35 +67,42 @@ function onClickInterface(event) {
   }
 }
 
+function loadPage(projectData) {
+  projectDetailData = projectData;
+  renderProjectList(projectDetailData);
+  renderStatusColor();
+  countTasks(projectDetailData);
+  updateStatistics();
 
-function renderProjectList(data) {
-  data.forEach(project => {
-    let newRow = document.createElement('tr');
-    newRow.setAttribute('project-id', project.id);
-    newRow.innerHTML = `
-      <td>${project.name}</td>
-      <td><div class="project-description">${project.description}</div></td>
-      <td>${project.endTime}</td>
-      <td class="project-status">${project.status}</td>
-      <td><div class="delete-icon">删除</div></td>`;
-    tableBody.appendChild(newRow);
-  });
-}
+  function renderProjectList(data) {
+    data.forEach(project => {
+      let newRow = document.createElement('tr');
+      newRow.setAttribute('project-id', project.id);
+      newRow.innerHTML = `
+        <td>${project.name}</td>
+        <td><div class="project-description">${project.description}</div></td>
+        <td>${project.endTime}</td>
+        <td class="project-status">${project.status}</td>
+        <td><div class="delete-icon">删除</div></td>`;
+      tableBody.appendChild(newRow);
+    });
+  }
 
-function renderStatusColor() {
-  let statusEls = document.getElementsByClassName('project-status');
-  Array.prototype.forEach.call(statusEls, tdEl => { setTdColor(tdEl) });
-  function setTdColor(tdEl) {
-    switch (tdEl.textContent) {
-      case active:
-        tdEl.style.color = '#666666';
-        break;
-      case pending:
-        tdEl.style.color = '#ee706d';
-        break;
-      case closed:
-        tdEl.style.color = '#f7da47';
-        break;
+  function renderStatusColor() {
+    let statusEls = document.getElementsByClassName('project-status');
+    Array.prototype.forEach.call(statusEls, tdEl => { setTdColor(tdEl) });
+    function setTdColor(tdEl) {
+      switch (tdEl.textContent) {
+        case active:
+          tdEl.style.color = '#666666';
+          break;
+        case pending:
+          tdEl.style.color = '#ee706d';
+          break;
+        case closed:
+          tdEl.style.color = '#f7da47';
+          break;
+      }
     }
   }
 }
@@ -142,25 +159,7 @@ function updateStatistics() {
   });
 }
 
-function deleteProject(targetEl) {
-  let projectToDeleteId = targetEl.parentElement.parentElement.getAttribute('project-id');
-
-  deleteItemData(projectToDeleteId);
-  deleteProjectOnPage(targetEl.parentElement.parentElement);
-  deleteProjectInScript(projectToDeleteId);
-
-  function deleteProjectOnPage(targetEl) {
-    tableBody.removeChild(targetEl);
-  }
-  function deleteProjectInScript(projectToDeleteId) {
-    console.log(projectToDeleteId);
-    projectDetailData = projectDetailData.filter(project => projectToDeleteId !== project.id.toString());
-    console.log(projectDetailData);
-  }
-}
-
 function getItemData() {
-  let tmpData = null;
   let getAJAXJsonOption = {
     url: jsonServerUrl,
     method: 'GET',
