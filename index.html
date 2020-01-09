@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="./iconfont/iconfont.css">
 </head>
 
-<body>
+<body  onclick="onClickInterface(event)">
   <div class="overview-bar">
     <div class="all-tasks overview-part">
       <i class="iconfont icon-xiangmu"></i>
@@ -44,7 +44,7 @@
     </div>
   </div>
   <h1 class="table-name">项目列表</h1>
-  <table class="project-list" onclick="onClickTable(event)">
+  <table class="project-list">
     <tbody>
       <tr class="table-header">
         <td>项目名称</td>
@@ -64,7 +64,7 @@
         <h4>确认删除该项目吗</h4>
         <div class="buttons-banner">
           <div class="confirm-btn">确认</div>
-          <div class="cancel">取消</div>
+          <div class="cancel-btn">取消</div>
         </div>
       </div>
     </div>

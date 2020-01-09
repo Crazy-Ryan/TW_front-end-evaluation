@@ -2,8 +2,9 @@ const jsonServerUrl = 'http://localhost:3000/projects';
 const active = 'ACTIVE';
 const pending = 'PENDING';
 const closed = 'CLOSED';
-
+let projectToDeleteEl;
 let tableBody = document.getElementsByTagName('tbody')[0];
+let deletePopup= document.getElementsByClassName('delete-popup')[0];
 let projectData = getItemData();
 let unresolvedTaskCount = 0;
 let processingTaskCount = 0;
@@ -16,14 +17,39 @@ function loadPage(projectData) {
   updateStatistics();
 }
 
-function onClickTable(event) {
+function onClickInterface(event) {
   const deleteIcon = 'delete-icon';
+  const confirmBtn = 'confirm-btn';
+  const cancelBtn = 'cancel-btn';
+  const closeBtn = 'iconfont icon-guanbi';
   let clickClass = event.target.getAttribute('class');
-  if (deleteIcon === clickClass) {
-    let projectToDeleteId = event.target.parentElement.parentElement.getAttribute('project-id');
-    deleteProject(projectToDeleteId,event.target);
+
+  switch (clickClass) {
+    case deleteIcon:
+      setProjectToDelete(event.target);
+      showDeletePopup();
+      break;
+    case confirmBtn:
+      deleteProject(projectToDeleteEl); 
+      hideDeletePopup();
+      break;
+    case cancelBtn:
+    case closeBtn:
+      hideDeletePopup();
+      break;
+  }
+
+  function setProjectToDelete(target) {
+    projectToDeleteEl = target.parentElement.parentElement;
+  }
+  function showDeletePopup(){
+    deletePopup.style.display = "flex";
+  }
+  function hideDeletePopup(){
+    deletePopup.style.display = "none";
   }
 }
+
 
 function renderProjectList(data) {
   data.forEach(project => {
@@ -58,7 +84,6 @@ function renderStatusColor() {
 }
 
 function countTasks(projectArray) {
-
   projectArray.forEach(project => {
     switch (project.status) {
       case active:
@@ -107,16 +132,15 @@ function updateStatistics() {
   });
 }
 
-function deleteProject(projectToDeleteId,targetEl) {
+function deleteProject(targetEl) {
+  let projectToDeleteId = targetEl.getAttribute('project-id');
+  
   // deleteItemData(projectToDeleteId);
   deleteProjectOnPage(targetEl);
-
-  function deleteProjectOnPage(targetEl){
-    tableBody.removeChild(targetEl.parentElement.parentElement);
+  function deleteProjectOnPage(targetEl) {
+    tableBody.removeChild(targetEl);
   }
 }
-
-
 
 function getItemData() {
   let tmpData = null;
