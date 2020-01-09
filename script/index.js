@@ -2,8 +2,21 @@ const jsonServerUrl = 'http://localhost:3000/projects';
 const active = 'ACTIVE';
 const pending = 'PENDING';
 const closed = 'CLOSED';
+
 let tableBody = document.getElementsByTagName('tbody')[0];
 let projectData = getItemData();
+let unresolvedTaskCount = 0;
+let processingTaskCount = 0;
+let resolvedTaskCount = 0;
+
+function loadPage(projectData) {
+  renderProjectList(projectData);
+  renderStatusColor();
+  countTasks(projectData);
+  updateStatistics();
+}
+
+
 
 function renderProjectList(data) {
   data.forEach(project => {
@@ -37,7 +50,56 @@ function renderStatusColor() {
   }
 }
 
+function countTasks(projectArray) {
 
+  projectArray.forEach(project => {
+    switch (project.status) {
+      case active:
+        processingTaskCount++;
+        break;
+      case pending:
+        unresolvedTaskCount++;
+        break;
+      case closed:
+        resolvedTaskCount++;
+        break;
+    }
+  });
+}
+
+function updateStatistics() {
+  const allTasks = 'all-tasks';
+  const unresolvedTasks = 'unresolved-tasks';
+  const processingTasks = 'processing-tasks';
+  const resolvedTasks = 'resolved-tasks';
+  let totalTaskCount = processingTaskCount + unresolvedTaskCount + resolvedTaskCount;
+  let statisticEls = document.getElementsByClassName('overview-part');
+
+  Array.prototype.forEach.call(statisticEls, statisticEl => {
+    switch (statisticEl.getAttribute('class').split(' ')[0]) {
+      case allTasks:
+        statisticEl.lastElementChild.innerHTML = `
+          <h3>${totalTaskCount}</h3>`;
+        break;
+      case unresolvedTasks:
+        statisticEl.lastElementChild.innerHTML = `
+          <h3>${unresolvedTaskCount}</h3>
+          <h4>${100 * unresolvedTaskCount / totalTaskCount}%</h4>`;
+        break;
+      case processingTasks:
+        statisticEl.lastElementChild.innerHTML = `
+          <h3>${processingTaskCount}</h3>
+          <h4>${100 * processingTaskCount / totalTaskCount}%</h4>`;
+        break;
+      case resolvedTasks:
+        statisticEl.lastElementChild.innerHTML = `
+          <h3>${resolvedTaskCount}</h3>
+          <h4>${100 * resolvedTaskCount / totalTaskCount}%</h4>`;
+        break;
+    }
+  });
+
+}
 
 function getItemData() {
   let tmpData = null;
@@ -45,8 +107,7 @@ function getItemData() {
     url: jsonServerUrl,
     method: 'GET',
     success: function (responseText) {
-      renderProjectList(responseText);
-      renderStatusColor();
+      loadPage(responseText);
     },
     fail: function (error) {
       console.log('get data error')
@@ -78,7 +139,7 @@ function ajaxJsonHandle(options) {
     success: options.success || function (result) { },
     fail: options.fail || function (error) { }
   }
-  var xhttp = new XMLHttpRequest();
+  let xhttp = new XMLHttpRequest();
   xhttp.onload = () => {
     AJAXSetup.success(JSON.parse(xhttp.responseText));
   };
