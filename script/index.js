@@ -2,18 +2,20 @@ const jsonServerUrl = 'http://localhost:3000/projects';
 const active = 'ACTIVE';
 const pending = 'PENDING';
 const closed = 'CLOSED';
+let projectDetailData;
 let projectToDeleteEl;
 let tableBody = document.getElementsByTagName('tbody')[0];
-let deletePopup= document.getElementsByClassName('delete-popup')[0];
+let deletePopup = document.getElementsByClassName('delete-popup')[0];
 let projectData = getItemData();
 let unresolvedTaskCount = 0;
 let processingTaskCount = 0;
 let resolvedTaskCount = 0;
 
 function loadPage(projectData) {
-  renderProjectList(projectData);
+  projectDetailData = projectData;
+  renderProjectList(projectDetailData);
   renderStatusColor();
-  countTasks(projectData);
+  countTasks(projectDetailData);
   updateStatistics();
 }
 
@@ -30,8 +32,7 @@ function onClickInterface(event) {
       showDeletePopup();
       break;
     case confirmBtn:
-      deleteProject(projectToDeleteEl); 
-      hideDeletePopup();
+      confirmDeleteHandle();
       break;
     case cancelBtn:
     case closeBtn:
@@ -39,13 +40,19 @@ function onClickInterface(event) {
       break;
   }
 
-  function setProjectToDelete(target) {
-    projectToDeleteEl = target.parentElement.parentElement;
+  function confirmDeleteHandle() {
+    deleteProject(projectToDeleteEl);
+    countTasks(projectDetailData);
+    updateStatistics();
+    hideDeletePopup();
   }
-  function showDeletePopup(){
+  function setProjectToDelete(target) {
+    projectToDeleteEl = target;
+  }
+  function showDeletePopup() {
     deletePopup.style.display = "flex";
   }
-  function hideDeletePopup(){
+  function hideDeletePopup() {
     deletePopup.style.display = "none";
   }
 }
@@ -84,6 +91,9 @@ function renderStatusColor() {
 }
 
 function countTasks(projectArray) {
+  unresolvedTaskCount = 0;
+  processingTaskCount = 0;
+  resolvedTaskCount = 0;
   projectArray.forEach(project => {
     switch (project.status) {
       case active:
@@ -116,29 +126,36 @@ function updateStatistics() {
       case unresolvedTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${unresolvedTaskCount}</h3>
-          <h4>${100 * unresolvedTaskCount / totalTaskCount}%</h4>`;
+          <h4>${Math.round(100 * unresolvedTaskCount / totalTaskCount)}%</h4>`;
         break;
       case processingTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${processingTaskCount}</h3>
-          <h4>${100 * processingTaskCount / totalTaskCount}%</h4>`;
+          <h4>${Math.round(100 * processingTaskCount / totalTaskCount)}%</h4>`;
         break;
       case resolvedTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${resolvedTaskCount}</h3>
-          <h4>${100 * resolvedTaskCount / totalTaskCount}%</h4>`;
+          <h4>${Math.round(100 * resolvedTaskCount / totalTaskCount)}%</h4>`;
         break;
     }
   });
 }
 
 function deleteProject(targetEl) {
-  let projectToDeleteId = targetEl.getAttribute('project-id');
-  
-  // deleteItemData(projectToDeleteId);
-  deleteProjectOnPage(targetEl);
+  let projectToDeleteId = targetEl.parentElement.parentElement.getAttribute('project-id');
+
+  deleteItemData(projectToDeleteId);
+  deleteProjectOnPage(targetEl.parentElement.parentElement);
+  deleteProjectInScript(projectToDeleteId);
+
   function deleteProjectOnPage(targetEl) {
     tableBody.removeChild(targetEl);
+  }
+  function deleteProjectInScript(projectToDeleteId) {
+    console.log(projectToDeleteId);
+    projectDetailData = projectDetailData.filter(project => projectToDeleteId !== project.id.toString());
+    console.log(projectDetailData);
   }
 }
 
