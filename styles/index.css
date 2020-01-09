@@ -108,8 +108,7 @@ body {
   width: 20%;
 }
 
-.table-header td:nth-child(3),
-.table-header td:nth-child(4) {
+.table-header td:nth-child(3), .table-header td:nth-child(4) {
   width: 14%;
 }
 
@@ -117,12 +116,24 @@ body {
   width: 10%;
 }
 
-.project-list tr{
+.project-list tr {
   border-bottom: 1px solid #dcdee3;
 }
 
-.project-list td{
+.project-list td {
   padding: 15px;
+}
+
+.project-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.project-description:hover {
+  display: block;
 }
 
 .delete-icon {
