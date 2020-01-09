@@ -16,7 +16,14 @@ function loadPage(projectData) {
   updateStatistics();
 }
 
-
+function onClickTable(event) {
+  const deleteIcon = 'delete-icon';
+  let clickClass = event.target.getAttribute('class');
+  if (deleteIcon === clickClass) {
+    let projectToDeleteId = event.target.parentElement.parentElement.getAttribute('project-id');
+    deleteProject(projectToDeleteId,event.target);
+  }
+}
 
 function renderProjectList(data) {
   data.forEach(project => {
@@ -98,8 +105,18 @@ function updateStatistics() {
         break;
     }
   });
-
 }
+
+function deleteProject(projectToDeleteId,targetEl) {
+  // deleteItemData(projectToDeleteId);
+  deleteProjectOnPage(targetEl);
+
+  function deleteProjectOnPage(targetEl){
+    tableBody.removeChild(targetEl.parentElement.parentElement);
+  }
+}
+
+
 
 function getItemData() {
   let tmpData = null;

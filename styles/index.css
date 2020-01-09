@@ -137,6 +137,7 @@ body {
 }
 
 .delete-icon {
+  cursor: pointer;
   display: inline-block;
   padding: 8px 12px;
   border-radius: 5px;
