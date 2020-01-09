@@ -147,3 +147,78 @@ body {
   text-align: center;
   background-color: #ee706d;
 }
+
+.delete-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.delete-dialog {
+  position: relative;
+  width: 340px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+.delete-content-box {
+  margin-left: 45px; 
+}
+
+.delete-content-box h3{
+  margin: 15px 0 0 0;
+  line-height: 24px;
+  font-size: 20px;
+  font-weight: normal;
+  color: #333;
+}
+
+.delete-content-box h4{
+  margin: 8px 0 25px 0;
+  font-size: 14px;
+  font-weight: normal;
+  color: #666;
+}
+
+.buttons-banner {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons-banner div{
+  cursor: pointer;
+  margin: 0 5px;
+  border: 1px solid #818388;
+  border-radius: 2px;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.delete-popup .icon-wenhao {
+  position: absolute;
+  left: 20px;
+  top: 35px;
+  color: #f1c826;
+  font-size: 24px;
+}
+
+.delete-popup .icon-guanbi {
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: #696969;
+  font-size: 16px;
+}
+
+.confirm-btn {
+  color: #ffffff;
+  background-color: #3080fe;
+}

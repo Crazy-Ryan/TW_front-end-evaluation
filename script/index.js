@@ -30,11 +30,11 @@ function renderProjectList(data) {
     let newRow = document.createElement('tr');
     newRow.setAttribute('project-id', project.id);
     newRow.innerHTML = `
-    <td>${project.name}</td>
-    <td><div class="project-description">${project.description}</div></td>
-    <td>${project.endTime}</td>
-    <td class="project-status">${project.status}</td>
-    <td><div class="delete-icon">删除</div></td>`;
+      <td>${project.name}</td>
+      <td><div class="project-description">${project.description}</div></td>
+      <td>${project.endTime}</td>
+      <td class="project-status">${project.status}</td>
+      <td><div class="delete-icon">删除</div></td>`;
     tableBody.appendChild(newRow);
   });
 }
