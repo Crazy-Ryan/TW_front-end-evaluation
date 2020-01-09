@@ -4,13 +4,14 @@
 }
 
 body {
-  padding: 30px 20px;
+  padding: 20px 20px;
   font-family: serif, 'Microsoft YaHei';
 }
 
 .overview-bar {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .overview-part {
@@ -88,3 +89,23 @@ body {
   font-size: 100px;
   opacity: 0.3;
 }
+
+.table-name {
+  font-size: 25px;
+  font-weight: normal;
+}
+
+.project-detail{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  color: #333;
+}
+
+.table-header{
+  background-color: #ebecf0;
+}
+
+/* .table-header td:nth-child(1){
+  width: 20%;
+} */
