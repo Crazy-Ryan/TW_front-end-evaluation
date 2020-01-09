@@ -46,8 +46,7 @@ body {
   background-color: #3b67a4;
 }
 
-.title-row, 
-.statistic-row {
+.title-row, .statistic-row {
   display: flex;
   justify-content: space-between;
 }
@@ -58,10 +57,7 @@ body {
   font-size: 14px;
 }
 
-.overview-bar h1, 
-.overview-bar h2, 
-.overview-bar h3, 
-.overview-bar h4 {
+.overview-bar h1, .overview-bar h2, .overview-bar h3, .overview-bar h4 {
   margin: 0;
 }
 
@@ -77,6 +73,7 @@ body {
 }
 
 .statistic-row {
+  margin-bottom: 10px;
   font-size: 32px;
   font-weight: 500;
   line-height: 30px;
@@ -85,7 +82,7 @@ body {
 .overview-bar .iconfont {
   position: absolute;
   right: 10px;
-  top: 6px;
+  top: 10px;
   font-size: 100px;
   opacity: 0.3;
 }
@@ -95,17 +92,46 @@ body {
   font-weight: normal;
 }
 
-.project-detail{
+.project-list {
   table-layout: auto;
   width: 100%;
   border-collapse: collapse;
+  font-size: 16px;
   color: #333;
 }
 
-.table-header{
+.table-header {
   background-color: #ebecf0;
 }
 
-/* .table-header td:nth-child(1){
+.table-header td:nth-child(1) {
   width: 20%;
-} */
+}
+
+.table-header td:nth-child(3),
+.table-header td:nth-child(4) {
+  width: 14%;
+}
+
+.table-header td:nth-child(5) {
+  width: 10%;
+}
+
+.project-list tr{
+  border-bottom: 1px solid #dcdee3;
+}
+
+.project-list td{
+  padding: 15px;
+}
+
+.delete-icon {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bolder;
+  text-align: center;
+  background-color: #ee706d;
+}

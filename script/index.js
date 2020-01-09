@@ -1,4 +1,43 @@
 const jsonServerUrl = 'http://localhost:3000/projects';
+const active = 'ACTIVE';
+const pending = 'PENDING';
+const closed = 'CLOSED';
+let tableBody = document.getElementsByTagName('tbody')[0];
+let projectData = getItemData();
+
+function renderProjectList(data) {
+  data.forEach(project => {
+    let newRow = document.createElement('tr');
+    newRow.setAttribute('project-id', project.id);
+    newRow.innerHTML = `
+    <td>${project.name}</td>
+    <td>${project.description}</td>
+    <td>${project.endTime}</td>
+    <td class="project-status">${project.status}</td>
+    <td><div class="delete-icon">删除</div></td>`;
+    tableBody.appendChild(newRow);
+  });
+}
+
+function renderStatusColor() {
+  let statusEls = document.getElementsByClassName('project-status');
+  Array.prototype.forEach.call(statusEls, tdEl => { setTdColor(tdEl) });
+  function setTdColor(tdEl) {
+    switch (tdEl.textContent) {
+      case active:
+        tdEl.style.color = '#666666';
+        break;
+      case pending:
+        tdEl.style.color = '#ee706d';
+        break;
+      case closed:
+        tdEl.style.color = '#f7da47';
+        break;
+    }
+  }
+}
+
+
 
 function getItemData() {
   let tmpData = null;
@@ -6,9 +45,10 @@ function getItemData() {
     url: jsonServerUrl,
     method: 'GET',
     success: function (responseText) {
-      console.log(responseText);
+      renderProjectList(responseText);
+      renderStatusColor();
     },
-    fail:function(error){
+    fail: function (error) {
       console.log('get data error')
     }
   }
@@ -22,25 +62,13 @@ function deleteItemData(id) {
     success: function (result) {
       console.log('delete succeed')
     },
-    fail:function(error){
+    fail: function (error) {
       console.log('delete data error')
     }
   };
   ajaxJsonHandle(deleteAJAXJsonOption);
 }
 
-deleteItemData(1);
-
-/**
-options = {
-  url: "",
-  method: "",
-  headers: {}, 
-  data: "",
-  success: function(result) {},  // 请求成功后调用此方法
-  fail: function(error) {}    // 请求失败或出错后调用此方法
-}
-**/
 function ajaxJsonHandle(options) {
   const AJAXSetup = {
     url: options.url || "",
