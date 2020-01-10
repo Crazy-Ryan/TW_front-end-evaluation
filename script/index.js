@@ -10,7 +10,7 @@ let unresolvedTaskCount = 0;
 let processingTaskCount = 0;
 let resolvedTaskCount = 0;
 
-getItemData();
+getAJAXData();
 function onClickInterface(event) {
   const deleteIcon = 'delete-icon';
   const confirmBtn = 'confirm-btn';
@@ -40,17 +40,26 @@ function onClickInterface(event) {
 
     function deleteProject(targetEl) {
       let projectToDeleteId = targetEl.parentElement.parentElement.getAttribute('project-id');
-      deleteItemData(projectToDeleteId);
+      deleteAJAXData(projectToDeleteId);
       deleteProjectOnPage(targetEl.parentElement.parentElement);
       deleteProjectInScript(projectToDeleteId);
 
+      function deleteAJAXData(id) {
+        let deleteAJAXJsonOption = {
+          url: jsonServerUrl + '/' + id,
+          method: 'DELETE',
+          success: function (result) {},
+          fail: function (error) {
+            console.log('delete data error')
+          }
+        };
+        ajaxJsonHandle(deleteAJAXJsonOption);
+      }
       function deleteProjectOnPage(targetEl) {
         tableBody.removeChild(targetEl);
       }
       function deleteProjectInScript(projectToDeleteId) {
-        console.log(projectToDeleteId);
         projectDetailData = projectDetailData.filter(project => projectToDeleteId !== project.id.toString());
-        console.log(projectDetailData);
       }
     }
   }
@@ -58,7 +67,6 @@ function onClickInterface(event) {
   function setProjectToDelete(target) {
     projectToDeleteEl = target;
   }
-
   function showDeletePopup() {
     deletePopup.style.display = "flex";
   }
@@ -67,41 +75,56 @@ function onClickInterface(event) {
   }
 }
 
-function loadPage(projectData) {
-  projectDetailData = projectData;
-  renderProjectList(projectDetailData);
-  renderStatusColor();
-  countTasks(projectDetailData);
-  updateStatistics();
+function getAJAXData() {
+  let getAJAXJsonOption = {
+    url: jsonServerUrl,
+    method: 'GET',
+    success: function (responseText) {
+      loadPage(responseText);
+    },
+    fail: function (error) {
+      console.log('get data error');
+    }
+  };
+  ajaxJsonHandle(getAJAXJsonOption);
 
-  function renderProjectList(data) {
-    data.forEach(project => {
-      let newRow = document.createElement('tr');
-      newRow.setAttribute('project-id', project.id);
-      newRow.innerHTML = `
-        <td>${project.name}</td>
-        <td><div class="project-description">${project.description}</div></td>
-        <td>${project.endTime}</td>
-        <td class="project-status">${project.status}</td>
-        <td><div class="delete-icon">删除</div></td>`;
-      tableBody.appendChild(newRow);
-    });
-  }
-
-  function renderStatusColor() {
-    let statusEls = document.getElementsByClassName('project-status');
-    Array.prototype.forEach.call(statusEls, tdEl => { setTdColor(tdEl) });
-    function setTdColor(tdEl) {
-      switch (tdEl.textContent) {
-        case active:
-          tdEl.style.color = '#666666';
-          break;
-        case pending:
-          tdEl.style.color = '#ee706d';
-          break;
-        case closed:
-          tdEl.style.color = '#f7da47';
-          break;
+  function loadPage(projectData) {
+    projectDetailData = projectData;
+    renderProjectList(projectDetailData);
+    renderStatusColor();
+    countTasks(projectDetailData);
+    updateStatistics();
+  
+    function renderProjectList(data) {
+      data.forEach(project => {
+        let newRow = document.createElement('tr');
+        newRow.setAttribute('project-id', project.id);
+        newRow.innerHTML = `
+          <td>${project.name}</td>
+          <td><div class="project-description">${project.description}</div></td>
+          <td>${project.endTime}</td>
+          <td class="project-status">${project.status}</td>
+          <td><div class="delete-icon">删除</div></td>`;
+        tableBody.appendChild(newRow);
+      });
+    }
+  
+    function renderStatusColor() {
+      let statusEls = document.getElementsByClassName('project-status');
+      Array.prototype.forEach.call(statusEls, tdEl => { setCellColor(tdEl) });
+      
+      function setCellColor(tdEl) {
+        switch (tdEl.textContent) {
+          case active:
+            tdEl.style.color = '#666666';
+            break;
+          case pending:
+            tdEl.style.color = '#ee706d';
+            break;
+          case closed:
+            tdEl.style.color = '#f7da47';
+            break;
+        }
       }
     }
   }
@@ -159,34 +182,6 @@ function updateStatistics() {
   });
 }
 
-function getItemData() {
-  let getAJAXJsonOption = {
-    url: jsonServerUrl,
-    method: 'GET',
-    success: function (responseText) {
-      loadPage(responseText);
-    },
-    fail: function (error) {
-      console.log('get data error')
-    }
-  }
-  ajaxJsonHandle(getAJAXJsonOption);
-}
-
-function deleteItemData(id) {
-  let deleteAJAXJsonOption = {
-    url: jsonServerUrl + '/' + id,
-    method: 'DELETE',
-    success: function (result) {
-      console.log('delete succeed')
-    },
-    fail: function (error) {
-      console.log('delete data error')
-    }
-  };
-  ajaxJsonHandle(deleteAJAXJsonOption);
-}
-
 function ajaxJsonHandle(options) {
   const AJAXSetup = {
     url: options.url || "",
@@ -195,7 +190,7 @@ function ajaxJsonHandle(options) {
     data: options.data || null,
     success: options.success || function (result) { },
     fail: options.fail || function (error) { }
-  }
+  };
   let xhttp = new XMLHttpRequest();
   xhttp.onload = () => {
     AJAXSetup.success(JSON.parse(xhttp.responseText));
