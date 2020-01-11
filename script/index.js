@@ -16,6 +16,9 @@ function onClickInterface(event) {
   const confirmBtn = 'confirm-btn';
   const cancelBtn = 'cancel-btn';
   const closeBtn = 'iconfont icon-guanbi';
+  const asendBtn = 'iconfont icon-shengxu';
+  const desendBtn = 'iconfont icon-jiangxu1';
+
 
   let clickClass = event.target.getAttribute('class');
   switch (clickClass) {
@@ -30,6 +33,39 @@ function onClickInterface(event) {
     case closeBtn:
       hideDeletePopup();
       break;
+    case asendBtn:
+      onClickAsendBtn();
+      break;
+    case desendBtn:
+      onClickDesendBtn();
+      break;
+  }
+
+  function removeProjectList(){
+    let tempEle = tableBody.firstElementChild;
+    while (tableBody.firstChild) {
+      tableBody.removeChild(tableBody.firstChild);
+    }
+    tableBody.appendChild(tempEle);
+  }
+  function onClickAsendBtn(){
+    removeProjectList();
+    renderProjectList(asendTimeSort(projectDetailData));
+    renderStatusColor();
+    let asendEl = document.getElementsByClassName("icon-shengxu")[0];
+    let desendEl = document.getElementsByClassName("icon-jiangxu1")[0];
+    asendEl.style.color="#3080fe";
+    desendEl.style.color="#aaa";
+  }
+
+  function onClickDesendBtn(){
+    removeProjectList();
+    renderProjectList(desendTimeSort(projectDetailData));
+    renderStatusColor();
+    let asendEl = document.getElementsByClassName("icon-shengxu")[0];
+    let desendEl = document.getElementsByClassName("icon-jiangxu1")[0];
+    desendEl.style.color="#3080fe";
+    asendEl.style.color="#aaa";
   }
 
   function confirmDeleteHandle() {
@@ -48,9 +84,9 @@ function onClickInterface(event) {
         let deleteAJAXJsonOption = {
           url: jsonServerUrl + '/' + id,
           method: 'DELETE',
-          success: function (result) {},
+          success: function (result) { },
           fail: function (error) {
-            console.log('delete data error')
+            console.log('delete data error');
           }
         };
         ajaxJsonHandle(deleteAJAXJsonOption);
@@ -90,42 +126,45 @@ function getAJAXData() {
 
   function loadPage(projectData) {
     projectDetailData = projectData;
-    renderProjectList(projectDetailData);
+    renderProjectList(asendTimeSort(projectDetailData));
+    renderProjectList(desendTimeSort(projectDetailData));
     renderStatusColor();
     countTasks(projectDetailData);
     updateStatistics();
-  
-    function renderProjectList(data) {
-      data.forEach(project => {
-        let newRow = document.createElement('tr');
-        newRow.setAttribute('project-id', project.id);
-        newRow.innerHTML = `
-          <td>${project.name}</td>
-          <td><div class="project-description">${project.description}</div></td>
-          <td>${project.endTime}</td>
-          <td class="project-status">${project.status}</td>
-          <td><div class="delete-icon">删除</div></td>`;
-        tableBody.appendChild(newRow);
-      });
-    }
-  
-    function renderStatusColor() {
-      let statusEls = document.getElementsByClassName('project-status');
-      Array.prototype.forEach.call(statusEls, tdEl => { setCellColor(tdEl) });
-      
-      function setCellColor(tdEl) {
-        switch (tdEl.textContent) {
-          case active:
-            tdEl.style.color = '#666666';
-            break;
-          case pending:
-            tdEl.style.color = '#ee706d';
-            break;
-          case closed:
-            tdEl.style.color = '#f7da47';
-            break;
-        }
-      }
+
+
+  }
+}
+
+function renderProjectList(data) {
+  data.forEach(project => {
+    let newRow = document.createElement('tr');
+    newRow.setAttribute('project-id', project.id);
+    newRow.innerHTML = `
+      <td>${project.name}</td>
+      <td><div class="project-description">${project.description}</div></td>
+      <td>${project.endTime}</td>
+      <td class="project-status">${project.status}</td>
+      <td><div class="delete-icon">删除</div></td>`;
+    tableBody.appendChild(newRow);
+  });
+}
+
+function renderStatusColor() {
+  let statusEls = document.getElementsByClassName('project-status');
+  Array.prototype.forEach.call(statusEls, tdEl => { setCellColor(tdEl) });
+
+  function setCellColor(tdEl) {
+    switch (tdEl.textContent) {
+      case pending:
+        tdEl.style.color = '#666666';
+        break;
+      case active:
+        tdEl.style.color = '#ee706d';
+        break;
+      case closed:
+        tdEl.style.color = '#f7da47';
+        break;
     }
   }
 }
@@ -136,10 +175,10 @@ function countTasks(projectArray) {
   resolvedTaskCount = 0;
   projectArray.forEach(project => {
     switch (project.status) {
-      case active:
+      case pending:
         processingTaskCount++;
         break;
-      case pending:
+      case active:
         unresolvedTaskCount++;
         break;
       case closed:
@@ -155,7 +194,7 @@ function updateStatistics() {
   const processingTasks = 'processing-tasks';
   const resolvedTasks = 'resolved-tasks';
   let totalTaskCount = processingTaskCount + unresolvedTaskCount + resolvedTaskCount;
-  let totalTaskCountNoZero = (0 === totalTaskCount)? 1:totalTaskCount;
+  let totalTaskCountNoZero = (0 === totalTaskCount) ? 1 : totalTaskCount;
   let statisticEls = document.getElementsByClassName('overview-part');
 
   Array.prototype.forEach.call(statisticEls, statisticEl => {
@@ -180,6 +219,18 @@ function updateStatistics() {
           <h4>${Math.round(100 * resolvedTaskCount / totalTaskCountNoZero)}%</h4>`;
         break;
     }
+  });
+}
+
+function asendTimeSort(data) {
+  return data.sort(function (a, b) {
+    return Number(a.endTime.split('-').join('')) - Number(b.endTime.split('-').join(''));
+  });
+}
+
+function desendTimeSort(data) {
+  return data.sort(function (a, b) {
+    return Number(b.endTime.split('-').join('')) - Number(a.endTime.split('-').join(''));
   });
 }
 
