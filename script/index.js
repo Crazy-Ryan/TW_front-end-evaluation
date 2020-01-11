@@ -155,6 +155,7 @@ function updateStatistics() {
   const processingTasks = 'processing-tasks';
   const resolvedTasks = 'resolved-tasks';
   let totalTaskCount = processingTaskCount + unresolvedTaskCount + resolvedTaskCount;
+  let totalTaskCountNoZero = (0 === totalTaskCount)? 1:totalTaskCount;
   let statisticEls = document.getElementsByClassName('overview-part');
 
   Array.prototype.forEach.call(statisticEls, statisticEl => {
@@ -166,17 +167,17 @@ function updateStatistics() {
       case unresolvedTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${unresolvedTaskCount}</h3>
-          <h4>${Math.round(100 * unresolvedTaskCount / totalTaskCount)}%</h4>`;
+          <h4>${Math.round(100 * unresolvedTaskCount / totalTaskCountNoZero)}%</h4>`;
         break;
       case processingTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${processingTaskCount}</h3>
-          <h4>${Math.round(100 * processingTaskCount / totalTaskCount)}%</h4>`;
+          <h4>${Math.round(100 * processingTaskCount / totalTaskCountNoZero)}%</h4>`;
         break;
       case resolvedTasks:
         statisticEl.lastElementChild.innerHTML = `
           <h3>${resolvedTaskCount}</h3>
-          <h4>${Math.round(100 * resolvedTaskCount / totalTaskCount)}%</h4>`;
+          <h4>${Math.round(100 * resolvedTaskCount / totalTaskCountNoZero)}%</h4>`;
         break;
     }
   });
